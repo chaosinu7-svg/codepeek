@@ -1,0 +1,4 @@
+# CodePeek 依赖（macOS）
+# pywebview 会自动带上 pyobjc（Cocoa/WebKit），无需单独列
+pywebview>=6.2
+markdown>=3.4

@@ -27,12 +27,12 @@
 
 ```bash
 # 1. 拉代码
-git clone <你的仓库地址>
-cd CodePeek
+git clone https://github.com/chaosinu7-svg/codepeek.git
+cd codepeek
 
 # 2. 建虚拟环境、装依赖
 python3 -m venv .venv
-.venv/bin/pip install pywebview markdown
+.venv/bin/pip install -r requirements.txt
 
 # 3. 配置（复制模板，填入你的 API key）
 cp config.example.json config.json
@@ -48,6 +48,8 @@ skhd --start-service
 ```
 
 装好后，任何软件里按 **⌘⇧B** 即可。
+
+> 想马上试？框选 `samples/example.py` 里那段代码看看。
 
 ---
 
