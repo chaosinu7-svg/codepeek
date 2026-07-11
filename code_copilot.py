@@ -418,10 +418,13 @@ def _pin_over_fullscreen(window):
     def apply():
         try:
             from webview.platforms import cocoa
+            from PyObjCTools import AppHelper
             ns = cocoa.BrowserView.instances[window.uid].window
             # CanJoinAllSpaces(1<<0) | FullScreenAuxiliary(1<<8)：叠在全屏之上、跟随当前空间
-            ns.setCollectionBehavior_((1 << 0) | (1 << 8))
-            log.info("已设跨空间行为：可叠在全屏/当前空间之上")
+            # ⚠️ setCollectionBehavior: 必须在主线程调用，shown 事件跑在后台线程，
+            #    直接调会 crash（Must only be used from the main thread）→ 用 callAfter 派发到主线程
+            AppHelper.callAfter(ns.setCollectionBehavior_, (1 << 0) | (1 << 8))
+            log.info("已把跨空间行为设置派发到主线程")
         except Exception:
             log.exception("设置跨空间行为失败（不影响其它功能）")
 
