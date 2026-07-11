@@ -1,0 +1,6 @@
+{
+  "base_url": "https://api.siliconflow.cn/v1",
+  "api_key": "在这里粘贴你的 API key（硅基流动 / 任意 OpenAI 兼容平台）",
+  "model": "Qwen/Qwen3-VL-30B-A3B-Instruct",
+  "save_folder": ""
+}

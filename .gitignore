@@ -1,0 +1,16 @@
+# ⚠️ 含真实 API key，绝对不要上传
+config.json
+
+# 本地数据（各人自己的，不进仓库）
+snippets.json
+copilot.log
+收藏/
+
+# 本地生成的启动器
+讲代码.app/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
