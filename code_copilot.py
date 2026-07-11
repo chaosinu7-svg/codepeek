@@ -412,6 +412,25 @@ class Api:
             save_snippets(snips)
 
 
+def _pin_over_fullscreen(window):
+    """让浮层能叠在当前画面（含全屏 App / 当前 Space）之上，
+    而不是被 macOS 切回桌面空间才显示——修"在全屏网页里框选会跳回桌面"。"""
+    def apply():
+        try:
+            from webview.platforms import cocoa
+            ns = cocoa.BrowserView.instances[window.uid].window
+            # CanJoinAllSpaces(1<<0) | FullScreenAuxiliary(1<<8)：叠在全屏之上、跟随当前空间
+            ns.setCollectionBehavior_((1 << 0) | (1 << 8))
+            log.info("已设跨空间行为：可叠在全屏/当前空间之上")
+        except Exception:
+            log.exception("设置跨空间行为失败（不影响其它功能）")
+
+    try:
+        window.events.shown += apply
+    except Exception:
+        log.exception("订阅 shown 事件失败")
+
+
 def run_gui(cfg, image_path):
     api = Api(cfg, image_path)
     window = webview.create_window(
@@ -420,6 +439,7 @@ def run_gui(cfg, image_path):
         background_color="#1e1e2e",
     )
     api.window = window
+    _pin_over_fullscreen(window)
     webview.start(lambda: run_turn(api))
 
 
