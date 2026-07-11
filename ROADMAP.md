@@ -1,4 +1,4 @@
-# 代码识别副驾 · 产品思路与路线
+# CodePeek · 产品思路与路线
 
 > 记「为什么这么做、故意不做什么、护城河在哪、下一步」。
 > 实现细节看 [ARCHITECTURE.md](ARCHITECTURE.md)，用法看 [README.md](README.md)。

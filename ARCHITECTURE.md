@@ -1,4 +1,4 @@
-# 代码识别副驾 · 架构与功能全景
+# CodePeek · 架构与功能全景
 
 > 一个 Mac 本地小工具：框选屏幕上任意一段代码 → 浮层里用大白话讲给你听，可纠错、可追问、可把命令攒进代码库。
 > 单文件实现（`code_copilot.py`），无框架、无数据库，靠三个本地文件持久化。
@@ -59,7 +59,7 @@ flowchart TD
 
 1. **对话主线**：`messages` 列表贯穿始终。第 0 条 = 图片 + 讲解提示词；之后 `fix`/`ask` 都是往列表尾部加一条 user 消息，再 `run_turn` 流式生成 assistant 回复。界面上 `rendered`（累积的 HTML）一路往下追加，像聊天记录。
 2. **UI 桥**：浮层是一段 HTML 字符串跑在 pywebview（WKWebView）里。JS 按钮 → `pywebview.api.xxx()` → 回到 Python 的 `Api` 方法；Python 反过来用 `window.evaluate_js("render(...)")` 更新界面。**只有 `evaluate_js` 和 subprocess 是线程安全的**（见第 5 节的坑）。
-3. **持久化**：三个文件，各管一摊——`config.json`（设置）、`snippets.json`（代码库）、`copilot.log`（日志）。收藏的对话是另写进用户自选文件夹的 `代码识别副驾.md`。
+3. **持久化**：三个文件，各管一摊——`config.json`（设置）、`snippets.json`（代码库）、`copilot.log`（日志）。收藏的对话是另写进用户自选文件夹的 `CodePeek.md`。
 
 ---
 

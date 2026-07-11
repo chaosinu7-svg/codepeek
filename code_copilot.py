@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-代码识别副驾 · v1.7
+CodePeek · v1.7
 框选一段代码 → 浮层讲解 → 可「🔧 纠错」、底部「追问」深挖、点外面/ESC 自动消失。
 代码块可「⭐ 收藏」进「📚 代码库」，库里点一行即复制、可直接粘进终端。
 所有动作与异常写入 copilot.log（架构见 ARCHITECTURE.md）。
@@ -350,7 +350,7 @@ class Api:
                 return "没选文件夹"
         folder = self.cfg["save_folder"]
         os.makedirs(folder, exist_ok=True)
-        fp = os.path.join(folder, "代码识别副驾.md")
+        fp = os.path.join(folder, "CodePeek.md")
         block = f"\n\n---\n\n### {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}\n\n{self.transcript}\n"
         with open(fp, "a", encoding="utf-8") as f:
             f.write(block)
@@ -437,7 +437,7 @@ def _pin_over_fullscreen(window):
 def run_gui(cfg, image_path):
     api = Api(cfg, image_path)
     window = webview.create_window(
-        "代码识别副驾", html=HTML, js_api=api,
+        "CodePeek", html=HTML, js_api=api,
         width=540, height=600, on_top=True, text_select=True,
         background_color="#1e1e2e",
     )

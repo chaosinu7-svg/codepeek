@@ -7,7 +7,7 @@ copilot.log
 收藏/
 
 # 本地生成的启动器
-讲代码.app/
+*.app/
 
 # Python
 .venv/
