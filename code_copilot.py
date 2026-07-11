@@ -61,9 +61,16 @@ def logged(fn):
     wrapper.__name__ = fn.__name__
     return wrapper
 
-PROMPT_EXPLAIN = """你是帮我学 coding 的助手。图里是一段代码或命令。我是初学者，目标是**快速看懂它在干嘟**，不是读长篇。
+PROMPT_EXPLAIN = """你是帮我学 coding 的助手。图里**应该**是一段代码或命令。我是初学者，目标是**快速看懂它在干嘟**，不是读长篇。
 
-怎么讲：
+**先判断**：图里到底是不是代码 / 命令 / 终端输出 / 报错信息？如果**不是**（照片、聊天截图、纯文字文章、网页界面、表格等），**别硬讲成代码**——只回下面这一句然后**立刻停，别编、别往下讲**：
+> 📷 这框里好像不是代码。CodePeek 只讲代码和命令，框一段代码再试试 👋
+
+如果**确实是**代码/命令，才按下面来——
+
+**第一步（先做）**：把你从图里读到的代码/命令**原样抄进一个代码块**，紧跟在一行 `**📄 我读到的**` 后面——让我能一眼核对你有没有读错（读错了我就知道别信下面的讲解）。别改动、别补全、别翻译，图里啥样就抄啥样。
+
+然后再讲解：
 1. **先一句话总览**：这整段在干嘟。
 2. 再**只挑关键的地方**讲——一处一小段，说清"是什么 + 为什么这么写"。显而易见的略过，别逐字逐符号都讲。
 3. **简洁、连贯**，像朋友三两句讲明白。别啰嗦、别拆成十小块重复说、**不要写"总结"段**。
@@ -412,28 +419,6 @@ class Api:
             save_snippets(snips)
 
 
-def _pin_over_fullscreen(window):
-    """让浮层能叠在当前画面（含全屏 App / 当前 Space）之上，
-    而不是被 macOS 切回桌面空间才显示——修"在全屏网页里框选会跳回桌面"。"""
-    def apply():
-        try:
-            from webview.platforms import cocoa
-            from PyObjCTools import AppHelper
-            ns = cocoa.BrowserView.instances[window.uid].window
-            # CanJoinAllSpaces(1<<0) | FullScreenAuxiliary(1<<8)：叠在全屏之上、跟随当前空间
-            # ⚠️ setCollectionBehavior: 必须在主线程调用，shown 事件跑在后台线程，
-            #    直接调会 crash（Must only be used from the main thread）→ 用 callAfter 派发到主线程
-            AppHelper.callAfter(ns.setCollectionBehavior_, (1 << 0) | (1 << 8))
-            log.info("已把跨空间行为设置派发到主线程")
-        except Exception:
-            log.exception("设置跨空间行为失败（不影响其它功能）")
-
-    try:
-        window.events.shown += apply
-    except Exception:
-        log.exception("订阅 shown 事件失败")
-
-
 def run_gui(cfg, image_path):
     api = Api(cfg, image_path)
     window = webview.create_window(
@@ -442,8 +427,9 @@ def run_gui(cfg, image_path):
         background_color="#1e1e2e",
     )
     api.window = window
-    _pin_over_fullscreen(window)
     webview.start(lambda: run_turn(api))
+    # 注：全屏(独立 Space)里唤起会先切回桌面再弹窗——这是 pywebview 普通窗口的
+    # macOS 限制，试过 accessory/collectionBehavior 反而更糟(全屏不显示)，故不做，保稳。
 
 
 def run_once():
